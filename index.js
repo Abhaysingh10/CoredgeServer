@@ -22,7 +22,7 @@ const io = new Server(server, {
 
 const audioPipeline = 'udpsrc port=5000 ! application/x-rtp,media=audio,encoding-name=OPUS ! rtpopusdepay ! mux.';
 const videoPipeline = 'udpsrc port=5001 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay  ! mux.';
-const muxPipeline = 'matroskamux name=mux ! filesink location=C:/Users/Abhay/Desktop/video.mkv';
+const muxPipeline = 'matroskamux name=mux ! filesink location=video.mkv';
 
 const gstreamerPipeline = `${audioPipeline} ${videoPipeline} ${muxPipeline}`;
 
@@ -37,11 +37,10 @@ app.use(cors());
 
 
 io.sockets.on("connection", (socket) => {
-    console.log("socket", socket.id)
+    console.log("User connected", socket.id)
   
     socket.on('callUser', (data) => {
-        console.log("hey", data)
-        socket.broadcast.emit('hey', data);
+        socket.broadcast.emit('incomingCall', data);
       });
     
       socket.on('acceptCall', (data) => {
